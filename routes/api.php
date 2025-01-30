@@ -56,6 +56,7 @@ Route::post('/deleteDataFOL', [PressureController::class,'deleteData']);
 Route::post('/getFolOff', [PredController::class,'getFolOff']);
 Route::post('/folOffOn', [PredController::class,'folOffOn']);
 Route::post('/sendToDBJambi', [PredController::class,'sendToDBJambi']);
+Route::post('/rekapPompa', [PredController::class,'rekapPompa']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

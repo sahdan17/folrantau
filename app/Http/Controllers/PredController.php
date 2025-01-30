@@ -122,29 +122,6 @@ jam {$waktu}
 // dd($message);
 
         $this->sendToDBJambi($message, '120363316938739260@g.us');
-        
-        // $curl = curl_init();
-
-        // curl_setopt_array($curl, array(
-        //     CURLOPT_URL => 'https://api.fonnte.com/send',
-        //     CURLOPT_RETURNTRANSFER => true,
-        //     CURLOPT_ENCODING => '',
-        //     CURLOPT_MAXREDIRS => 10,
-        //     CURLOPT_TIMEOUT => 0,
-        //     CURLOPT_FOLLOWLOCATION => true,
-        //     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        //     CURLOPT_CUSTOMREQUEST => 'POST',
-        //     CURLOPT_POSTFIELDS => array(
-        //         'target' => '120363316938739260@g.us',
-        //         // 'target' => '082289002445',
-        //         'message' => $message),
-        //     CURLOPT_HTTPHEADER => array(
-        //         'Authorization: _v-ovBD!PVaxjDhc2Li2'
-        //     ),
-        // ));
-        
-        // $response = curl_exec($curl);
-        // curl_close($curl);
     }
 
     private function sendNotif($message, $idSpot, $ket, $timestamp)
@@ -182,30 +159,8 @@ jam {$waktu}
         }
 
         if ($send){
-            $curl = curl_init();
-
-            curl_setopt_array($curl, array(
-                CURLOPT_URL => 'https://api.fonnte.com/send',
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => '',
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 0,
-                CURLOPT_FOLLOWLOCATION => true,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => 'POST',
-                CURLOPT_POSTFIELDS => array(
-                    'target' => '120363341933049255@g.us',
-                    // 'target' => '082289002445',
-                    'message' => $message),
-                CURLOPT_HTTPHEADER => array(
-                    'Authorization: _v-ovBD!PVaxjDhc2Li2'
-                ),
-            ));
-        
-            $response = curl_exec($curl);
-            curl_close($curl);
-        
-            return $response;
+            $this->rekapPompa();
+            $this->sendToDBJambi($message, '120363341933049255@g.us');
         }
     }
 
@@ -351,6 +306,69 @@ jam {$waktu}
         return response()->json([
             'message' => 'berhasil',
         ]);
+    }
+
+    public function rekapPompa() {
+        $timestamp = Carbon::now('Asia/Jakarta');
+        $dateNow = $timestamp->format('Y-m-d H:i:s');
+
+        $histList = [];
+        $start = [];
+        $stop = [];
+
+        $hist = HistOnOff::where('timestamp', '>=', DB::raw('NOW() - INTERVAL 10 DAY'))
+            ->orderBy('timestamp', 'asc')
+            // ->limit(1)
+            ->get();
+
+        foreach ($hist as $index => $h) {
+            if ($h->ket =='start') {
+                $start[] = $h->timestamp;
+            } else {
+                $stop[] = $h->timestamp;
+            }
+            $histList[] = $h->timestamp;
+        }
+
+        if (count($start) > count($stop)) {
+            $stop[] = "now";
+            $histList[] = "now";
+        }
+
+        $rekap = "*Rekap On/Off Pompa*\n\n";
+        $totTime = 0;
+
+        foreach ($start as $id => $s) {
+            $startTime = strtotime($s);
+            $sta = Carbon::parse($s)->format('Y-m-d H:i');
+            if ($stop[$id] == 'now') {
+                $st = $dateNow;
+            } else {
+                $st = $stop[$id];
+            }
+            $stopTime = strtotime($st);
+            $time = $stopTime - $startTime;
+            $totTime += $time;
+
+            $days = floor($time / 86400);
+            $hours = floor(($time % 86400) / 3600);
+            $minutes = floor(($time % 3600) / 60);
+
+            $duration = "$days hari $hours jam $minutes menit";
+
+            $sto = Carbon::parse($st)->format('Y-m-d H:i');
+            $rekap .= "On $sta - $sto\n";
+            $rekap .= "Selama $duration\n";
+        }
+
+        $daysTot = floor($totTime / 86400);
+        $hoursTot = floor(($totTime % 86400) / 3600);
+        $minutesTot = floor(($totTime % 3600) / 60);
+        $durationTot = "$daysTot hari $hoursTot jam $minutesTot menit";
+
+        $rekap .= "*Total On $durationTot*";
+
+        $this->sendToDBJambi($message, '120363341933049255@g.us');
     }
     
     public function sendToDBJambi($message, $target) {
