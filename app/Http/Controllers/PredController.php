@@ -227,7 +227,7 @@ jam {$waktu}
             $list = $list->groupBy('idSpot');
             $i = 1;
             
-            $message = "*List FOL Off*";
+            $message = "*List FOL Off*\n";
             
             foreach ($list as $id => $l) {
                 if ($l[0]->ket == 'on') {
@@ -247,14 +247,14 @@ jam {$waktu}
                 }
             }
             
-            // dd($list);
-            
             foreach ($list as $id => $l) {
                 $namaSpot = $spotMap[$id];
                 
-                $report[$id] = "\n";
+                $total[$id] = "00:00";
+                $second[$id] = 0;
+                $report[$id] = "";
                 $report[$id] .= "
-    {$i}. FOL *{$namaSpot}*\n";
+{$i}. FOL *{$namaSpot}*\n";
                 
                 foreach ($listOff[$id] as $index => $lo) {
                     $dump = $listOn[$id][$index] ?? 'now';
@@ -273,6 +273,7 @@ jam {$waktu}
                     $dumpTimeString = $dumpCarbon->format('H:i');
                 
                     $diffInMinutes = $loCarbon->diffInMinutes($dumpCarbon);
+                    $second[$id] += $diffInMinutes;
                 
                     $hours   = floor($diffInMinutes / 60);
                     $minutes = $diffInMinutes % 60;
@@ -281,14 +282,20 @@ jam {$waktu}
                     $report[$id] .= "Pukul {$loTimeString} sd {$dumpText}\n";
                     $report[$id] .= "Selama: {$durasi}\n";
                 }
+
+                $totHours = floor($second[$id] / 60);
+                $totMinutes = $second[$id] % 60;
+                $report[$id] .= "*Total Off* Selama $totHours jam $totMinutes menit\n";
                 
                 $message .= "$report[$id]";
                 $i++;
             }
             
-            $this->sendToDBJambi($message, '120363341933049255@g.us');
+            // $this->sendToDBJambi($message, '120363341933049255@g.us');
+            $this->sendToDBJambi($message, '120363288603708376@g.us'); // test grup
         } catch (\Exception $e) {
-            $this->sendToDBJambi($e, '6282289002445');
+            // dd($e);
+            $this->sendToDBJambi($e->getMessage(), '120363288603708376@g.us');
         }
     }
     
