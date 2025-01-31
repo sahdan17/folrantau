@@ -175,12 +175,24 @@ jam {$waktu}
         $spotMap = $spots->pluck('namaSpot', 'id');
         
         try {
-            $list = ListFOLOff::whereDate('timestamp', $date)
-                            // ->orderBy('idSpot')
-                            ->get();
-                            
-            $list = $list->groupBy('idSpot');
-            $i = 1;
+            foreach ($spots as $indexSpot => $spot) {
+                $histList[$spot->id] = ListFOLOff::whereDate('timestamp', $date)
+                                            ->where('idSpot', $spot->id)
+                                            ->get();
+
+                if (count($histList[$spot->id]) > 0) {
+                    $list[$spot->id] = $histList[$spot->id];
+                } elseif (count($histList[$spot->id]) == 0) {
+                    $histList[$spot->id] = ListFOLOff::where('idSpot', $spot->id)
+                                                ->orderBy('timestamp', 'desc')
+                                                ->limit(1)
+                                                ->get();
+
+                    if ($histList[$spot->id][0]->ket == "off") {
+                        $list[$spot->id] = $histList[$spot->id];
+                    }
+                }
+            }
             
             $message = "*List FOL Off*\n";
             
@@ -201,50 +213,64 @@ jam {$waktu}
                     $list->forget($id);
                 }
             }
+
+            $i = 1;
             
             foreach ($list as $id => $l) {
                 $namaSpot = $spotMap[$id];
-                
+            
                 $total[$id] = "00:00";
                 $second[$id] = 0;
                 $report[$id] = "";
                 $report[$id] .= "
 {$i}. FOL *{$namaSpot}*\n";
-                
+            
                 foreach ($listOff[$id] as $index => $lo) {
                     $dump = $listOn[$id][$index] ?? 'now';
-                
+            
                     $loCarbon = Carbon::parse($lo, 'Asia/Jakarta');
-                
+            
                     if ($dump === 'now') {
                         $dumpCarbon = Carbon::now('Asia/Jakarta');
                         $dumpText = '_now_';
                     } else {
                         $dumpCarbon = Carbon::parse($dump, 'Asia/Jakarta');
-                        $dumpText   = $dumpCarbon->format('H:i'); 
+                        $dumpText = $dumpCarbon->format('H:i');
                     }
-                
-                    $loTimeString   = $loCarbon->format('H:i'); 
+            
+                    $loTimeString = $loCarbon->format('H:i');
                     $dumpTimeString = $dumpCarbon->format('H:i');
-                
+            
                     $diffInMinutes = $loCarbon->diffInMinutes($dumpCarbon);
                     $second[$id] += $diffInMinutes;
-                
-                    $hours   = floor($diffInMinutes / 60);
+            
+                    $days = floor($diffInMinutes / 1440);
+                    $hours = floor(($diffInMinutes % 1440) / 60);
                     $minutes = $diffInMinutes % 60;
-                    $durasi  = "{$hours} jam {$minutes} menit";
-                    
+            
+                    if ($days > 0) {
+                        $durasi = "{$days} hari {$hours} jam {$minutes} menit";
+                    } else {
+                        $durasi = "{$hours} jam {$minutes} menit";
+                    }
+            
                     $report[$id] .= "Pukul {$loTimeString} sd {$dumpText}\n";
                     $report[$id] .= "Selama: {$durasi}\n";
                 }
-
-                $totHours = floor($second[$id] / 60);
+            
+                $totDays = floor($second[$id] / 1440);
+                $totHours = floor(($second[$id] % 1440) / 60);
                 $totMinutes = $second[$id] % 60;
-                $report[$id] .= "*Total Off* Selama $totHours jam $totMinutes menit\n";
-                
+            
+                if ($totDays > 0) {
+                    $report[$id] .= "*Total Off* Selama $totDays hari $totHours jam $totMinutes menit\n";
+                } else {
+                    $report[$id] .= "*Total Off* Selama $totHours jam $totMinutes menit\n";
+                }
+            
                 $message .= "$report[$id]";
                 $i++;
-            }
+            }   
             
             // $this->sendToDBJambi($message, '120363341933049255@g.us');
             $this->sendToDBJambi($message, '120363288603708376@g.us'); // test grup
