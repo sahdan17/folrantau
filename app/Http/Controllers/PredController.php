@@ -238,7 +238,12 @@ jam {$waktu}
                         $dumpText = $dumpCarbon->format('H:i');
                     }
             
-                    $loTimeString = $loCarbon->format('H:i');
+                    if ($loCarbon->isToday()) {
+                        $loTimeString = $loCarbon->format('H:i');
+                    } else {
+                        $loTimeString = $loCarbon->format('Y-m-d H:i');
+                    }
+                    
                     $dumpTimeString = $dumpCarbon->format('H:i');
             
                     $diffInMinutes = $loCarbon->diffInMinutes($dumpCarbon);
