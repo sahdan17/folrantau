@@ -21,11 +21,6 @@ use App\Http\Controllers\BatteryController;
 |
 */
 
-// Route::middleware(['guest'])->group(function () {
-//     Route::get('/login', [SesiController::class, 'index'])->name('login');
-//     Route::post('/login', [SesiController::class, 'login']);
-// });
-
 Route::post('store', [PressureController::class, 'store']);
 Route::post('storeTest', [PressureController::class, 'storeTest']);
 Route::get('updateUniqueDates', [PressureController::class, 'updateUniqueDates']);
