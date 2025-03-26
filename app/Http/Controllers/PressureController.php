@@ -18,6 +18,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Auth;
 use App\Helpers\Predictions;
 use App\Http\Controllers\PredController;
+use Illuminate\Support\Facades\Http;
 
 class PressureController extends Controller
 {
@@ -32,7 +33,6 @@ class PressureController extends Controller
 
     public function store(Request $request)
     {
-        // $controller = new PredController();
         $data = $request->all();
 
         $validator = Validator::make($data,[
@@ -45,6 +45,79 @@ class PressureController extends Controller
         $timestamp = Carbon::now('Asia/Jakarta');
         $data['timestamp'] = $timestamp;
         $time = $timestamp->format('H:i');
+
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error!', $validator->errors());
+        }
+
+        $data = Pressure::create([
+            'psiValue' => $psiValue,
+            'idSpot' => $request['idSpot'],
+            'timestamp' => $timestamp,
+        ]);
+        
+        if ($request->idSpot == 2 && $psiValue >= 300 || $psiValue <= 50){
+            $this->pred->notifPompa($psiValue, $timestamp);
+        } 
+        
+        if ($request->idSpot == 1 && $psiValue >= 400 && $psiValue <= 479){
+            $this->pred->prediction();
+        } elseif ($request->idSpot == 2 && $psiValue >= 350 && $psiValue <= 424.32){
+            $this->pred->prediction();
+        } elseif ($request->idSpot == 3 && $psiValue >= 300 && $psiValue <= 378){
+            $this->pred->prediction();
+        } elseif ($request->idSpot == 4 && $psiValue >= 200 && $psiValue <= 297){
+            $this->pred->prediction();
+        } elseif ($request->idSpot == 5 && $psiValue >= 100 && $psiValue <= 173){
+            $this->pred->prediction();
+        } elseif ($request->idSpot == 6 && $psiValue >= 100 && $psiValue <= 164){
+            $this->pred->prediction();
+        } elseif ($request->idSpot == 7 && $psiValue >= 55 && $psiValue <= 119){
+            $this->pred->prediction();
+        } elseif ($request->idSpot == 8 && $psiValue >= 55 && $psiValue <= 69){
+            $this->pred->prediction();
+        }
+
+        return $this->sendResponse($data, 'Kirim data successfully!');
+    }
+
+    public function storeSend(Request $request)
+    {
+        $data = $request->all();
+
+        $validator = Validator::make($data,[
+            'psiValue' => 'required|numeric',
+            'idSpot' => 'required',
+        ]);
+
+        $psiValue = round($request['psiValue'], 2);
+        $idSpot = $request['idSpot'];
+
+        if ($validator->fails()) {
+            return $this->sendError('Validation Error!', $validator->errors());
+        }
+
+        $data = Http::post('https://folrantauold.findingoillosses.com/api/storeReceive', [
+            'psiValue' => $psiValue,
+            'idSpot' => $idSpot
+        ]); 
+
+        return $this->sendResponse($data, 'Kirim data successfully!');
+    }
+
+    public function storeReceive(Request $request)
+    {
+        $data = $request->all();
+
+        $validator = Validator::make($data,[
+            'psiValue' => 'required|numeric',
+            'idSpot' => 'required',
+        ]);
+
+        $psiValue = round($request['psiValue'], 2);
+
+        $timestamp = Carbon::now('Asia/Jakarta');
+        $data['timestamp'] = $timestamp;
 
         if ($validator->fails()) {
             return $this->sendError('Validation Error!', $validator->errors());

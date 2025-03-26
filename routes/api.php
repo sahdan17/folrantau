@@ -27,6 +27,8 @@ use App\Http\Controllers\BatteryController;
 // });
 
 Route::post('store', [PressureController::class, 'store']);
+Route::post('storeSend', [PressureController::class, 'storeSend']);
+Route::post('storeReceive', [PressureController::class, 'storeReceive']);
 Route::post('storeTest', [PressureController::class, 'storeTest']);
 Route::get('updateUniqueDates', [PressureController::class, 'updateUniqueDates']);
 Route::post('index', [PressureController::class, 'index']);
