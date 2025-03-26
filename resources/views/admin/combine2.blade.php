@@ -202,7 +202,7 @@
             akhir = selectedDate + " " + end;
             
             $.ajax({
-                url: 'https://folrantauold.findingoillosses.com/getHistoryData',
+                url: 'https://rtuold.findingoillosses.com/getHistoryData',
                 method: 'POST',
                 dataType: 'json',
                 data: {

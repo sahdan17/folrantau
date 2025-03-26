@@ -525,7 +525,7 @@
             $('body').addClass('loading-active');
 
             $.ajax({
-                url: 'https://folrantauold.findingoillosses.com/getHistoryData',
+                url: 'https://rtuold.findingoillosses.com/getHistoryData',
                 method: 'POST',
                 dataType: 'json',
                 data: {
@@ -1030,7 +1030,7 @@
                             }
                             
                             $.ajax({
-                                url: 'https://folrantauold.findingoillosses.com/predictSegmen2',
+                                url: 'https://rtuold.findingoillosses.com/predictSegmen2',
                                 type: 'POST',
                                 dataType: 'json',
                                 data: {
@@ -1054,7 +1054,7 @@
                     
                     $(document).on('click', '#wa-button', function() {
                         $.ajax({
-                            url: 'https://folrantauold.findingoillosses.com/sendToWA',
+                            url: 'https://rtuold.findingoillosses.com/sendToWA',
                             type: 'POST',
                             dataType: 'json',
                             data: {

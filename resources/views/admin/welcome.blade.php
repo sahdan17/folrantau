@@ -376,7 +376,7 @@
 
         function getTableData() {
             $.ajax({
-                url: 'https://folrantauold.findingoillosses.com/getPressureData',
+                url: 'https://rtuold.findingoillosses.com/getPressureData',
                 method: 'POST',
                 dataType: 'json',
                 data: {
@@ -394,7 +394,7 @@
                     manipulateData(pressuresData, spots, hour, date, spotsName, batteryData);
                     
                     $.ajax({
-                        url: 'https://folrantauold.findingoillosses.com/getBatteryData',
+                        url: 'https://rtuold.findingoillosses.com/getBatteryData',
                         method: 'POST',
                         dataType: 'json',
                         data: {

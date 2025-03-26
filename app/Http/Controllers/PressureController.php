@@ -97,7 +97,7 @@ class PressureController extends Controller
             return $this->sendError('Validation Error!', $validator->errors());
         }
 
-        $data = Http::post('https://folrantauold.findingoillosses.com/api/storeReceive', [
+        $data = Http::post('https://rtuold.findingoillosses.com/api/storeReceive', [
             'psiValue' => $psiValue,
             'idSpot' => $idSpot
         ]); 
