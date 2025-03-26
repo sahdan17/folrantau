@@ -376,7 +376,7 @@
 
         function getTableData() {
             $.ajax({
-                url: 'https://folpertaminafieldrantau.com/getPressureData',
+                url: 'https://folrantauold.findingoillosses.com/getPressureData',
                 method: 'POST',
                 dataType: 'json',
                 data: {
@@ -394,7 +394,7 @@
                     manipulateData(pressuresData, spots, hour, date, spotsName, batteryData);
                     
                     $.ajax({
-                        url: 'https://folpertaminafieldrantau.com/getBatteryData',
+                        url: 'https://folrantauold.findingoillosses.com/getBatteryData',
                         method: 'POST',
                         dataType: 'json',
                         data: {

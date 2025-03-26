@@ -541,7 +541,7 @@
             $('body').addClass('loading-active');
 
             $.ajax({
-                url: 'https://folpertaminafieldrantau.com/getHistoryData',
+                url: 'https://folrantauold.findingoillosses.com/getHistoryData',
                 method: 'POST',
                 dataType: 'json',
                 data: {
@@ -1088,7 +1088,7 @@
                             }
                             
                             $.ajax({
-                                url: 'https://folpertaminafieldrantau.com/predictSegmen2',
+                                url: 'https://folrantauold.findingoillosses.com/predictSegmen2',
                                 type: 'POST',
                                 dataType: 'json',
                                 data: {
@@ -1134,7 +1134,7 @@
                         }
                         
                         $.ajax({
-                            url: 'https://folpertaminafieldrantau.com/sendToWA',
+                            url: 'https://folrantauold.findingoillosses.com/sendToWA',
                             type: 'POST',
                             dataType: 'json',
                             data: {

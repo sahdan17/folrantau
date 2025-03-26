@@ -202,7 +202,7 @@
             akhir = selectedDate + " " + end;
             
             $.ajax({
-                url: 'https://folpertaminafieldrantau.com/getHistoryData',
+                url: 'https://folrantauold.findingoillosses.com/getHistoryData',
                 method: 'POST',
                 dataType: 'json',
                 data: {

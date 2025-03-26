@@ -133,7 +133,7 @@
             tbl += `<td style="border-bottom: 1px solid black; text-align: center; vertical-align: middle; font-weight: bold; min-width: 120px;">Action</td></tr>`;
             
             $.ajax({
-                url: 'https://folpertaminafieldrantau.com/getTanggal',
+                url: 'https://folrantauold.findingoillosses.com/getTanggal',
                 method: 'POST',
                 dataType: 'json',
                 headers: {
@@ -153,7 +153,7 @@
         function getDownload(tgl){
             $('.loader').show();
             $.ajax({
-                url: 'https://folpertaminafieldrantau.com/getDownloadList',
+                url: 'https://folrantauold.findingoillosses.com/getDownloadList',
                 method: 'POST',
                 dataType: 'json',
                 data: {
@@ -220,7 +220,7 @@
             console.log(tgl);
             const form = $('<form>', {
                 method: 'POST',
-                action: 'https://folpertaminafieldrantau.com/downloadExcelFOL'
+                action: 'https://folrantauold.findingoillosses.com/downloadExcelFOL'
             });
         
             form.append($('<input>', {
@@ -249,7 +249,7 @@
         
         $(document).on("click", "#confirmDelete", function () {
             $.ajax({
-                url: 'https://folpertaminafieldrantau.com/deleteDataFOL',
+                url: 'https://folrantauold.findingoillosses.com/deleteDataFOL',
                 method: 'POST',
                 dataType: 'json',
                 data: {
