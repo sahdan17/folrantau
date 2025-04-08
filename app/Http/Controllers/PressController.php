@@ -941,7 +941,7 @@ Pada Segmen $k, kebocoran pada titik $a KM dari PPP RTU, link Google Maps: $map"
         $tenDaysAgo = now()->subDays(10);
         
         $pressures = Pressure::whereBetween('timestamp', [$selectedDate, $nextDay])
-                            ->where('timestamp', 'ASC')
+                            ->orderBy('timestamp', 'ASC')
                             ->get();
 
         return response()->json([
