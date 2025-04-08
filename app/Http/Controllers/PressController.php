@@ -940,7 +940,9 @@ Pada Segmen $k, kebocoran pada titik $a KM dari PPP RTU, link Google Maps: $map"
         $idSpots = $spots->pluck('id')->toArray();
         $tenDaysAgo = now()->subDays(10);
         
-        $pressures = Pressure::whereBetween('timestamp', [$selectedDate, $nextDay])->get();
+        $pressures = Pressure::whereBetween('timestamp', [$selectedDate, $nextDay])
+                            ->where('timestamp', 'ASC')
+                            ->get();
 
         return response()->json([
             'selectedDate' => $selectedDate,
